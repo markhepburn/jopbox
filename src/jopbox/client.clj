@@ -93,18 +93,20 @@
                         true))))
 
 (defn delta
-  ([consumer access-token-response cursor]
-     (let [request-url "https://api.dropbox.com/1/delta"
-           credentials (make-credentials consumer
-                                         access-token-response
-                                         :POST
-                                         request-url
-                                         nil)]
-       (parse-string (:body (http/post request-url
-                                       {:query-params credentials}))
-                     true)))
-  ([consumer access-token-response]
-     (delta consumer access-token-response nil)))
+  [consumer access-token-response & {:keys [cursor path_prefix]
+                                     :or {:cursor nil
+                                          :path_prefix "/"}
+                                     :as params}]
+  (let [request-url "https://api.dropbox.com/1/delta"
+        credentials (make-credentials consumer
+                                      access-token-response
+                                      :POST
+                                      request-url
+                                      params)]
+    (parse-string (:body (http/post request-url
+                                    {:query-params credentials
+                                     :form-params params}))
+                  true)))
 
 (defn upload-file
   "Uploads file to Dropbox using PUT. `root` can be either :dropbox or
