@@ -64,9 +64,12 @@
                   true)))
 
 (defn get-file
-  "Downloads a file."
-  [consumer access-token-response root path]
-  (let [request-url (format "https://api-content.dropbox.com/1/files/%s/%s"
+  "Downloads a file.  Keyword arg `:root` may be `:auto` (the
+    default), `:dropbox`, or `:sandbox`.  `path` argument must be fully
+    qualified (start with a /)."
+  [consumer access-token-response path & {:keys [root]
+                                          :or {root :auto}}]
+  (let [request-url (format "https://api-content.dropbox.com/1/files/%s%s"
                             (name root)
                             path)
         credentials (make-credentials consumer
