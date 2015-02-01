@@ -3,6 +3,14 @@ jopbox
 
 jopbox is a Clojure library for working with the Dropbox API.
 
+## About this fork
+
+This fork of the [original][https://github.com/samrat/jopbox] fixes a
+bug and aims to support more methods and arguments via keyword
+parameters (for example, the `path_prefix` argument to `/delta` is
+supported, and `longpoll_delta` has been implemented).  This may or
+may not be compatible in the long term with the original.
+
 ## Demo
 
 [joplet](http://github.com/samrat/joplet) a small demo app using this
