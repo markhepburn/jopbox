@@ -131,6 +131,26 @@
   ;; Default value for timeout:
   ([consumer access-token-response cursor] (longpoll_delta consumer access-token-response cursor 30)))
 
+(defn delta_latest
+  "A way to quickly get a cursor for the server's state, for use with
+  /delta. Unlike /delta, /delta/latest_cursor does not return any
+  entries, so your app will not know about any existing files or
+  folders in the Dropbox account."
+  [consumer access-token-response & {:keys [path_prefix include_media_info]
+                                     :or {:path_prefix "/"
+                                          :include_media_info false}
+                                     :as params}]
+  (let [request-url "https://api.dropbox.com/1/delta/latest_cursor"
+        credentials (make-credentials consumer
+                                      access-token-response
+                                      :POST
+                                      request-url
+                                      params)]
+    (parse-string (:body (http/post request-url
+                                   {:query-params credentials
+                                    :form-params params}))
+                  true)))
+
 (defn upload-file
   "Uploads file to Dropbox using PUT. `root` can be either :dropbox or
      :sandbox. `remote-path` is the path where the file will be
